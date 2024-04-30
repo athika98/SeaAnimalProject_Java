@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ocean Oracle 🐡</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
+    <script src="script.js" async></script>
+    <style>
+
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            background-color: #f5f8f9;
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        .full-width-bartitle {
+            width: 100%;
+            background-color: #a4e1f9;
+            padding: 10px 0;
+            margin: 0 auto;
+        }
+
+        h1.allura-regular {
+            margin: 0;
+            font-family: 'Allura', cursive;
+            font-size: 50px;
+        }
+
+    .full-width-bar {
+        width: 100%;
+        /*background-color: #a4e1f9; */
+        padding: 10px 0;
+        padding-left: 20px;
+        margin: 0 auto;
+    }
+</style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <br>
+        <div class="full-width-bartitle text-center">
+            <br>
+            <h1 class="allura-regular">Ocean Oracle 🐡</h1>
+        </div>
+        <br>
+        <div class="full-width-bar">
+            <h4>Willkommen zu Ocean Oracle</h4>
+            <p>Ocean Oracle ist ein Tool zur Klassifizierung von Meerestieren. Lade einfach
+                Fotos hoch, und das Tool identifiziert die Tiere für dich.
+                Erkunde spielend leicht die faszinierende Welt unter der Meeresoberfläche.</p>
+            <br>    
+            <form>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1"><b>Bild hochladen</b></label>
+                    <br>
+                    <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="image" name="image"
+                        onchange="checkFiles(this.files);">
+                </div>
+            </form>
+
+            <br>
+            <div id="answerPart" style="visibility: hidden;">
+                <p><b>Antwort:</b></p>
+                <div id="answer"></div>
+            
+            <br>
+                <p id="previewPart"><b>Analysiertes Bild:</b></p>
+                <img id="preview" width="300" src="#" alt="preview" />
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
