@@ -44,7 +44,7 @@ public final class Training {
         Path modelDir = Paths.get("models");
 
         // create ImageFolder dataset from directory
-        ImageFolder dataset = initDataset("pictures/root");
+        ImageFolder dataset = initDataset("images/root");
         // Split the dataset set into training dataset and validate dataset
         RandomAccessDataset[] datasets = dataset.randomSplit(8, 2);
 
