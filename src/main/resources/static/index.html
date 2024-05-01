@@ -9,9 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
-    <script src="script.js" async></script>
     <style>
-
         html,
         body {
             padding: 0;
@@ -37,51 +35,85 @@
             font-size: 50px;
         }
 
-    .full-width-bar {
-        width: 100%;
-        /*background-color: #a4e1f9; */
-        padding: 10px 0;
-        padding-left: 20px;
-        margin: 0 auto;
-    }
-</style>
+        .full-width-bar {
+            width: 100%;
+            padding: 10px 0;
+            padding-left: 20px;
+            margin: 0 auto;
+        }
 
+        .result-item {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container-fluid">
-        <br>
         <div class="full-width-bartitle text-center">
-            <br>
             <h1 class="allura-regular">Ocean Oracle 🐡</h1>
         </div>
-        <br>
         <div class="full-width-bar">
             <h4>Willkommen zu Ocean Oracle</h4>
-            <p>Ocean Oracle ist ein Tool zur Klassifizierung von Meerestieren. Lade einfach
-                Fotos hoch, und das Tool identifiziert die Tiere für dich.
-                Erkunde spielend leicht die faszinierende Welt unter der Meeresoberfläche.</p>
-            <br>    
+            <p>Ocean Oracle ist ein Tool zur Klassifizierung von Meerestieren. Lade einfach Fotos hoch, und das Tool
+                identifiziert die Tiere für dich. Erkunde spielend leicht die faszinierende Welt unter der
+                Meeresoberfläche.</p>
             <form>
                 <div class="form-group">
-                    <label for="exampleFormControlFile1"><b>Bild hochladen</b></label>
-                    <br>
-                    <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="image" name="image"
-                        onchange="checkFiles(this.files);">
+                    <label for="image"><b>Bild hochladen</b></label>
+                    <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="image"
+                        onchange="uploadImage()">
                 </div>
             </form>
-
-            <br>
-            <div id="answerPart" style="visibility: hidden;">
-                <p><b>Antwort:</b></p>
-                <div id="answer"></div>
-            
-            <br>
-                <p id="previewPart"><b>Analysiertes Bild:</b></p>
-                <img id="preview" width="300" src="#" alt="preview" />
-            </div>
+            <div id="results"></div>
         </div>
     </div>
+    <script>
+        function uploadImage() {
+            var imageInput = document.getElementById('image');
+            if (imageInput.files.length > 0) {
+                var formData = new FormData();
+                formData.append("image", imageInput.files[0]);
+    
+                fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+    
+        function displayResults(data) {
+            // Sortiere die Daten absteigend nach der Wahrscheinlichkeit
+            data.sort((a, b) => b.probability - a.probability);
+    
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Lösche vorherige Ergebnisse
+            data.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'result-item';
+                resultElement.innerHTML = `
+                    <img src="images/${result.className.replace(/\s+/g, '').toLowerCase()}.png" alt="${result.className}" style="width: 2cm; height: 2cm; object-fit: cover;">
+                    <div>
+                        <h5>${result.className}</h5>
+                        <p>Probability: ${(result.probability * 100).toFixed(2)}%</p>
+                    </div>
+                `;
+                resultsContainer.appendChild(resultElement);
+            });
+        }
+    </script>
+    
+
 </body>
 
 </html>
