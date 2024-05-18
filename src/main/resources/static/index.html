@@ -42,11 +42,26 @@
             margin: 0 auto;
         }
 
+        img {
+            width: 5cm;
+            /*height: 5cm;
+           object-fit: cover; */
+        }
+        
+
         .result-item {
-            margin-top: 10px;
-            padding: 10px;
+            margin: 5px;
+            padding: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-item img {
+            width: 3cm; /* Adjust the width as needed */
+            height: 3cm; /* Adjust the height as needed */
+            object-fit: cover; /* Ensures the image fits the dimensions without distortion */
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -58,26 +73,27 @@
         </div>
         <div class="full-width-bar">
             <h4>Willkommen zu Ocean Oracle</h4>
-            <p>Ocean Oracle ist ein Tool zur Klassifizierung von Meerestieren. Lade einfach Fotos hoch, und das Tool
-                identifiziert die Tiere für dich. Erkunde spielend leicht die faszinierende Welt unter der
-                Meeresoberfläche.</p>
+            <p>Ocean Oracle ist ein Tool zur Klassifizierung von Meerestieren. Lade einfach Fotos hoch, und das Tool identifiziert die Tiere für dich. Erkunde spielend leicht die faszinierende Welt unter der Meeresoberfläche.</p>
             <form>
                 <div class="form-group">
                     <label for="image"><b>Bild hochladen</b></label>
-                    <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="image"
-                        onchange="uploadImage()">
+                    <input type="file" accept="image/png, image/jpeg" class="form-control-file" id="image" onchange="uploadImage()">
                 </div>
             </form>
             <div id="results"></div>
         </div>
     </div>
+
     <script>
         function uploadImage() {
-            var imageInput = document.getElementById('image');
+            var imageInput = document.getElementById("image");
             if (imageInput.files.length > 0) {
                 var formData = new FormData();
                 formData.append("image", imageInput.files[0]);
-    
+
+                // Clear previous results
+                document.getElementById('results').innerHTML = '';
+
                 fetch('/analyze', {
                     method: 'POST',
                     body: formData
@@ -86,34 +102,35 @@
                 .then(data => {
                     displayResults(data);
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                .catch(error => console.error('Error:', error));
             }
         }
-    
+
         function displayResults(data) {
-            // Sortiere die Daten absteigend nach der Wahrscheinlichkeit
-            data.sort((a, b) => b.probability - a.probability);
-    
             const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = ''; // Lösche vorherige Ergebnisse
-            data.forEach(result => {
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            // Display uploaded image
+            const imageElement = document.createElement('img');
+            imageElement.src = 'data:image/png;base64,' + data.image;
+            imageElement.alt = 'Uploaded Image';
+            resultsContainer.appendChild(imageElement);
+
+            // Display classification results
+            data.results.forEach(result => {
                 const resultElement = document.createElement('div');
                 resultElement.className = 'result-item';
                 resultElement.innerHTML = `
-                    <img src="images/${result.className.replace(/\s+/g, '').toLowerCase()}.png" alt="${result.className}" style="width: 2cm; height: 2cm; object-fit: cover;">
+                    <img src="/images/${result.className}.png" alt="${result.className}">
                     <div>
-                        <h5>${result.className}</h5>
-                        <p>Probability: ${(result.probability * 100).toFixed(2)}%</p>
+                        <h3>${result.className.replace('_', ' ')}</h3>
+                        <p>Wahrscheinlichkeit: ${(result.probability * 100).toFixed(2)}%</p>
                     </div>
                 `;
                 resultsContainer.appendChild(resultElement);
             });
         }
     </script>
-    
-
 </body>
 
 </html>

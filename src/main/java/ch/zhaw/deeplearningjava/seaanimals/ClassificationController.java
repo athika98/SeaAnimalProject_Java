@@ -1,6 +1,8 @@
 package ch.zhaw.deeplearningjava.seaanimals;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +28,6 @@ public class ClassificationController {
         return "Classification app is up and running!";
     }
 
-    /*
-     * @PostMapping(path = "/analyze")
-     * public String predict(@RequestParam("image") MultipartFile image) throws
-     * Exception {
-     * System.out.println(image);
-     * return inference.predict(image.getBytes()).toJson();
-     * }
-     */
-
     @PostMapping(path = "/analyze")
     public ResponseEntity<String> predict(@RequestParam("image") MultipartFile image) throws Exception {
         System.out.println(image.getOriginalFilename());
@@ -42,11 +35,27 @@ public class ClassificationController {
         List<Map<String, Object>> results = new ArrayList<>();
         for (Classifications.Classification classification : classifications.items()) {
             Map<String, Object> result = new HashMap<>();
-            result.put("className", classification.getClassName());
+            result.put("className", classification.getClassName().replace(" ", "_"));
             result.put("probability", classification.getProbability());
             results.add(result);
         }
-        return ResponseEntity.ok().body(new Gson().toJson(results));
-    }
 
+        // Sort the results by probability in descending order
+        Collections.sort(results, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                return Double.compare((double) o2.get("probability"), (double) o1.get("probability"));
+            }
+        });
+
+        // Convert the image to a Base64 string
+        String base64Image = java.util.Base64.getEncoder().encodeToString(image.getBytes());
+
+        // Create the response JSON with the image URL and classification results
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", base64Image);
+        response.put("results", results);
+
+        return ResponseEntity.ok().body(new Gson().toJson(response));
+    }
 }
