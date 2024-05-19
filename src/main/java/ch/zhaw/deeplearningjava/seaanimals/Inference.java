@@ -1,5 +1,6 @@
 package ch.zhaw.deeplearningjava.seaanimals;
 
+/// Imports ///
 import ai.djl.Model;
 import ai.djl.ModelException;
 import ai.djl.inference.Predictor;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
+/// Imports ///
 
 public class Inference {
 
@@ -27,11 +29,11 @@ public class Inference {
 
     public Inference() {
         try {
-            Model model = Models.getModel();
-            Path modelDir = Paths.get("models");
-            model.load(modelDir, Models.MODEL_NAME);
+            Model model = Models.getModel(); // Laden des Modells
+            Path modelDir = Paths.get("models"); // Pfad zum Modellverzeichnis
+            model.load(modelDir, Models.MODEL_NAME); // Modell aus dem Verzeichnis laden
 
-            // define a translator for pre and post processing
+            // Translator für die Vor- und Nachverarbeitung definieren
             Translator<Image, Classifications> translator = ImageClassificationTranslator.builder()
                     .addTransform(new Resize(Models.IMAGE_WIDTH, Models.IMAGE_HEIGHT))
                     .addTransform(new ToTensor())
@@ -44,6 +46,7 @@ public class Inference {
         }
     }
 
+    // Die Methode predict gibt die Klassifizierung zurück
     public Classifications predict(byte[] image) throws ModelException, TranslateException, IOException {
         InputStream is = new ByteArrayInputStream(image);
         BufferedImage bi = ImageIO.read(is);

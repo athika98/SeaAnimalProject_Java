@@ -1,5 +1,6 @@
 package ch.zhaw.deeplearningjava.seaanimals;
 
+/// Imports ///
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 
 import ai.djl.modality.Classifications;
+/// Imports ///
 
 @RestController
 public class ClassificationController {
@@ -28,6 +30,7 @@ public class ClassificationController {
         return "Classification app is up and running!";
     }
 
+    // POST-Methode zur Analyse von Bildern und Klassifizierung von Meerestieren
     @PostMapping(path = "/analyze")
     public ResponseEntity<String> predict(@RequestParam("image") MultipartFile image) throws Exception {
         System.out.println(image.getOriginalFilename());
@@ -40,7 +43,7 @@ public class ClassificationController {
             results.add(result);
         }
 
-        // Sort the results by probability in descending order
+        // Sortierung der Ergebnisse nach Wahrscheinlichkeit in absteigender Reihenfolge
         Collections.sort(results, new Comparator<Map<String, Object>>() {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
@@ -48,14 +51,15 @@ public class ClassificationController {
             }
         });
 
-        // Convert the image to a Base64 string
+        // Konvertierung des Bildes in einen Base64-kodierten String für die einfache Übertragung
         String base64Image = java.util.Base64.getEncoder().encodeToString(image.getBytes());
 
-        // Create the response JSON with the image URL and classification results
+        // Erstellung der Antwort im JSON-Format mit dem Bild und den Klassifikationsergebnissen
         Map<String, Object> response = new HashMap<>();
         response.put("image", base64Image);
         response.put("results", results);
 
+        // Rückgabe der Antwort als JSON-String im Body der HTTP-Antwort
         return ResponseEntity.ok().body(new Gson().toJson(response));
     }
 }

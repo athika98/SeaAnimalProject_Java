@@ -121,7 +121,7 @@
                 const resultElement = document.createElement('div');
                 resultElement.className = 'result-item';
                 resultElement.innerHTML = `
-                    <img src="/images/${result.className}.png" alt="${result.className}">
+                    <img src="images/${result.className.replace(/\s+/g, '').toLowerCase()}.png" alt="${result.className}">
                     <div>
                         <h3>${result.className.replace('_', ' ')}</h3>
                         <p>Wahrscheinlichkeit: ${(result.probability * 100).toFixed(2)}%</p>
